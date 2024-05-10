@@ -1,0 +1,472 @@
+ZVSE2
+; Author:   Valery
+; renewed by Archer30
+; Engine:   ERM 2.0+
+; Requires: ERA 3.3+, Era Erm Framework
+
+; Searching selected map objects by pressing F， Ctrl+F to activate the main dialogue
+
+
+!?FU(findme_Initialization);
+!!VRi^Heroes_loop_activated^:S-1; resets heroes search
+!!VRi^fineme_Artifact_class^:S-1; resets artifacts class search
+!!VRi^findme_onevisit_activated^:S-1; reset one visit objects activation
+!!VRv8900:S1;
+!!VRi^findme_Type^:S(NO_OBJ);
+
+!#FU(findme_Initialization):P;
+
+**************** Press F key search *******************
+!?FU(OnKeyPressed_AdvMap)&i^key^=(KEY_F)/i^key_ctrl^=(FALSE)/i^key_shift^=(FALSE)/i^key_alt^=(FALSE);
+!#VA(key:x) (preventDefault:x);
+
+!!VR(preventDefault):S(TRUE);
+
+!!OW:C?y99/?v4;                         [y99, v4, get interacting player]
+!!OW:Av4/?y5;                           [y5, get active hero]
+!!VRv5:S1 Sd<<v4;                       [v5, Get player bit]
+!!SN:W^Heroes_loop_activated^/?y1;
+
+!!if&y1>98;     [process heroes]
+  !!SN:W^findme_Hero^/?y52;
+  !!VRy52&y52=155:S0;
+  !!DO9990003/y52/155/1:Pv4/v5;
+  !!FU:E;
+!!en;
+
+!!SN:W^findme_Type^/?y44;
+!!SN:W^findme_Subtype^/?y45;
+
+!!FU|y44=(NO_OBJ):E;
+
+!!SN:W^findme_Artifact_class^/?y1;
+
+!!if&y1>-1;
+  !!UN:U5/-1/?y30;  artifacts
+  !!VRv2:S-1;
+  !!DO9990004/1/y30/1&y30>0/v8900<=y30:P5/y1/y30/v4/v5;  Run through
+  !!FU:E;
+!!en;
+
+!!SN:W^findme_onevisit_activated^/?y46;
+
+!!if&y46>98; "one visit objects" is selected
+  !!SN:W^findme_show_hero^/?y47;
+
+  !!if&y47>0/y5<0;
+    !!IF:M^"%T(findme.noHero)^;
+    !!FU:E; exit if no active hero
+  !!en;
+
+  !!UN:Uy44/y45/?y30;
+  !!VRv2:S-1;
+  !!DO9990006/1/y30/1&y30>0/v8900<=y30:Py44/y45/y30/y47/v4/y5/v5;
+  !!FU:E;
+!!en;
+
+!!SN:W^findme_CB^/?y48; check if creature banks activated
+
+!!if&y48>98;
+  !!UN:Uy44/y45/?y30;
+  !!VRv2:S-1;
+  !!DO9990007/1/y30/1&y30>0/v8900<=y30:Py44/y45/y30/v4/v5;  Run through
+  !!FU:E;
+!!en;
+
+!!UN:Uy44/y45/?y30;
+!!VRv2:S-1;
+!!DO9990005/1/y30/1&y30>0/v8900<=y30:Py44/y45/y30/v4/v5;  Run through
+
+!?FU9990003;
+;x1 player
+;x2 player bits
+!!SN&x16=155:W^findme_Hero^/0;
+!!HEx16:O?y1;
+!!SN:W^findme_Hero^/x16;
+!!FU|y1<0/y1=x1:E;
+
+!!HEx16:P?v2/?v3/?v4;
+!!SN:W^findme_show_everywhere^/?y48;
+!!TR2:V?i;
+!!VRi:&x2; check current player bits
+!!UN&i<>x2/y48>0:Sv2/v3/v4/x1/1; show
+!!UN:Lv2/v3/v4/10;
+!!VRx16&x16<155:+1;
+!!SN&x16<155:W^findme_Hero^/x16;
+!!SN&x16=155:W^findme_Hero^/0;
+!!IF&x16=155:L^%T(findme.doneLoop)^;
+!!VRx16:S999;
+
+!?FU9990004;
+;x1 type
+;x2 artifact class
+;x3 total number of artis on map
+;x4 player
+;x5 player bits
+!!UN:Ux1/-1/v8900/2; artifact in v2/v3/v4
+!!OB2:U?y2; get artifact number
+!!UN:Ay2/3/?y3; get class
+!!VRv8900&v8900=x3:S0;
+!!VRv8900:+1;
+!!FU&y3<>x2:E; exit if not class selected
+
+!!SN:W^findme_show_everywhere^/?y48;
+!!TR2:V?i;
+!!VRi:&x5; check current player bits
+!!UN&i<>x5/y48>0:Sv2/v3/v4/x4/1; show
+!!VRx16:S999;
+!!UN:Lv2/v3/v4/1;
+
+!?FU9990006; one visit objects
+;x1, x2 type/subtype
+;x3 number of selected object
+;x4 state of search complete/hero based
+;x5 current player
+;x6 active hero
+;x7 player bits
+!!UN:Ux1/x2/v8900/2; object in v2/v3/v4
+!!SN:W^findme_show_everywhere^/?y48;
+!!TR2:V?i;
+!!VRi:&x7; check current player bits
+!!UN&i<>x7/y48>0:Sv2/v3/v4/x5/1; show
+!!UN:Lv2/v3/v4/1;
+!!IF&v8900=x3:L^%T(findme.doneLoop)^;
+!!VRv8900&v8900>=x3:S0;
+!!VRv8900:+1;
+!!VRx16:S999;
+
+!?FU9990007; creature banks
+;x1, x2 type/subtype
+;x3 number of selected object
+;x4 current player
+;x5 player bits
+!!UN:Ux1/x2/v8900/2; object in v2/v3/v4
+!!SN:W^findme_show_everywhere^/?y48;
+!!TR2:V?i;
+!!VRi:&x5; check current player bits
+!!UN&i=x5/y48>0:Sv2/v3/v4/x4/1; show
+!!UN:Lv2/v3/v4/1;
+!!IF&v8900=x3:L^%T(findme.doneLoop)^;
+!!VRv8900&v8900>=x3:S0;
+!!VRv8900:+1;
+!!VRx16:S999;
+
+!?FU9990005;
+;x4 player
+;x5 player bits
+!!UN:Ux1/x2/v8900/2; object in v2/v3/v4
+!!SN:W^findme_show_everywhere^/?y48;
+!!TR2:V?i;
+!!VRi:&x5; check current player bits
+!!UN&i<>x5/y48>0:Sv2/v3/v4/x4/1; show
+!!UN:Lv2/v3/v4/1;
+!!IF&v8900=x3:L^%T(findme.doneLoop)^;
+!!VRv8900&v8900>=x3:S0;
+!!VRv8900:+1;
+!!VRx16:S999;
+
+!?FU(OnKeyPressed_AdvMap)&i^key^=(KEY_F)/i^key_ctrl^/i^key_shift^=(FALSE)/i^key_alt^=(FALSE);
+!#VA(key:x) (preventDefault:x);
+
+!!VR(preventDefault):S(TRUE);
+
+!!FU(findme_Main):P;
+
+************* Display Dialog ***************
+
+!?FU(OnAdventureMapLeftMouseClick);
+!!SN:F^GetButtonID^/^Find.me^;
+!!FU(findme_Main)&i^mouse_item^=v1:P;
+
+!?FU(findme_Main);
+!!SN:P^View.wav^;
+!!VRv8900:S1;
+!!OW:C?v22; get current player
+!!OW:Av22/?v23; get active hero
+!!DL501:N^Findme.txt^;
+!!SN:W^findme_show_hero^/?y47;
+!!DL501&y47>0:A302/4/1/1; set
+!!DL501&y47>1:A302/4/0/1; set
+!!SN:W^findme_show_everywhere^/?y48;
+!!DL501&y48>0:A301/4/1/1; set
+!!DL501&y48<1:A301/4/0/1; set
+!!SN:W^findme_show_CB^/?y49;
+!!DL501&y49>0:A303/4/1/1; set
+!!DL501&y49<1:A303/4/0/1; set
+!!SN:W^findme_Hero^/0;
+
+
+!!FU(findme_PrepareDialog):P501;
+!!FU(findme_HandleHooks):P(TRUE);
+!!DL501:S1; show dialog
+!!FU(findme_HandleHooks):P(FALSE);
+
+!?FU(findme_HandleHooks);
+!#VA(doesSetHook:x);
+// daemon_n's scrolling support, mousewheel events
+  !!VRi^findme_dlg_item^:S(NULL);              [clear variables data]
+  !!SN:L^EraPlugins\erm_hooker.era^/?(hooker:y);
+
+  !!if&(hooker:y)<>0;
+    !!if&(doesSetHook:x);
+      !!VR(funcName:z):S^SetHook^;
+    !!el;
+      !!VR(funcName:z):S^UnsetHook^;
+    !!en;
+    !!SN:A(hooker:y)/(funcName:z)/?(function:y);
+    !!SN:E(function:y)/1/6287088/(findme_DlgItem_ShowHint);              [005FEEF0 6287088 DlgItem_ShowHint_callParentVMT4]
+  !!en;
+
+!#DC(FINDME_FRAME_WIDGET_ID) = 2020;
+
+!?FU(findme_PrepareDialog);
+!#VA(dlgId:x);
+
+!!FU(DlgFrame_Create):P15/15/43/27/(FINDME_FRAME_WIDGET_ID)/-1/?(frame:y);
+!!FU(DL_FindById):P(dlgId)/?(dlgPtr:y);
+!!UN:C(dlgPtr)/4/?(dlg:y);
+!!SN:E6287984/(CALLCONV_THISCALL)/(dlg:y)/(frame:y)/-1;                                 [add item to dlg list]
+!!VRi^findme_DlgFrame_Item^:S(frame:y);
+
+!?FU(DlgFrame_Create);
+!#VA(x:x) (y:x) (width:x) (height:x) (widgetId:x) (customColor:x) (result:x);
+
+!!VR(result):S(NULL);
+!!if&(customColor)<0;
+  !!UN:C6991128/4/?(palette:y);
+  !!VR(offset:y):S2*31 +28;
+  !!UN:C(palette)/(offset)/2/?(customColor);
+!!en;
+!!VR(result):S9598952;
+!!SN:E6386834/(CALLCONV_STDCALL)/56;/1;
+!!VR(result):Sv1;
+!!if&(result);
+  !!SN:E4521472/(CALLCONV_THISCALL)/(result)/(x)/(y)/(width:x)/(height:x)/(widgetId:x)/(customColor)/1024;           [create dlgFrame]
+  !!SN:E6286720/(CALLCONV_THISCALL)/(result)/6/6; set unclickable/unhandlable state
+!!el;
+  !!IF:M^Failed to allocate memory!^;
+!!en;
+
+
+!?FU(findme_DlgItem_ShowHint);
+  !!UN:Cx1/(STRUCT_HOOK_CONTEXT_ECX)/4/?(dlgItem:y);
+  !!UN:C(dlgItem:y)/16/2/?(itemId:y);
+
+  !!if&(dlgItem)>0/(itemId)<>(FINDME_FRAME_WIDGET_ID);
+    !!UN:C(dlgItem:y)/28/2/?(width:y) C(dlgItem:y)/30/2/?(height:y);
+    !!if&(width)=42/(height)=27;
+      !!UN:C(dlgItem:y)/24/2/?(x:y) C(dlgItem:y)/26/2/?(y:y);
+      !!UN:Ci^findme_DlgFrame_Item^/24/2/(x:y) Ci^findme_DlgFrame_Item^/26/2/(y:y);
+      !!UN:Ci^findme_DlgFrame_Item^/22/2/4;set unclickable/unhandlable state
+      !!FU(H3Dlg_GetCurrentDlg):P?(currentDlgStruct:y);
+      !!SN:E6288864/2/(currentDlgStruct)/1/-65535/65535; [update currentDlg;]
+    !!el;
+      !!UN:Ci^findme_DlgFrame_Item^/22/2/0; hide/deactivate
+    !!en;
+  !!en;
+
+
+************** Dialog Commands **************
+
+!?DL&v998=501/v999=30722/v1000=13;
+!!DL501:C1;  [close dialog]
+!!SN:W^findme_Type^/?y44;
+!!SN:W^findme_Subtype^/?y45;
+!!UN:Uy44/y45/?y30;
+!!SN:W^findme_Artifact_class^/?y46;
+
+!!if&y44>0/y46>-1;
+  !!SN:T^findme.totalArts^/?z1/^art^/y30;
+  !!IF:L^%z1^;
+!!el&y44>0/y46<0;
+  !!SN:T^findme.totalObjs^/?z2/^obj^/y30;
+  !!IF:L^%z2^;
+!!en;
+
+!?FU9990001;
+!!DL501:Ax16/4/0/1; reset cadres
+
+!?DL&v998=501/v999=301/v1000=13; show objects everywhere
+!!VRz1:S^Button.wav^;
+!!SN:Pz1;
+!!SN:W^findme_show_everywhere^/?y1;
+
+!!if&y1<1;
+  !!DL501:A301/4/1/1; set to ok
+  !!SN:W^findme_show_everywhere^/1;
+  !!FU:E;
+!!en;
+
+!!if&y1>0;
+  !!DL501:A301/4/0/1; set to ok
+  !!SN:W^findme_show_everywhere^/0;
+!!en;
+
+!?DL&v998=501/v999=232/v1000=13;  custom search
+!!VRz1:S^Button.wav^;
+!!SN:Pz1;
+!!DO9990001/1/115/1:P;
+!!DL501:A231/4/1/1;
+!!IF:V5/0;
+!!VRz2:S^%T(findme.customSearch)^;
+!!VRz3:S^%T(findme.enterType)^;
+!!IF:D58/2/3/^^/^^/^^/^^/^^;
+!!IF:F58/^^/^^/^^/^^/(FALSE);
+!!IF:E1/58;
+!!VRz1:H5;
+!!VRv2:Vz1;
+!!FU&v2<1:E;
+
+!!VRz2:S^%T(findme.customSearch)^;
+!!VRz3:S^%T(findme.enterSubtype)^;
+!!IF:D58/2/3/^^/^^/^^/^^/^^;
+!!IF:F58/^^/^^/^^/^^/(FALSE);
+!!IF:E1/58;
+!!VRz1:H5;
+!!VRv3:Vz1;
+!!FU&v3<0:E;
+
+!!SN:W^findme_Type^/v2;
+!!SN:W^findme_Subtype^/v3;
+
+!?DL&v998=501/v999>115/v999<231/v1000=13;
+!!SN:W^Heroes_loop_activated^/-1; resets heroes search
+!!SN:W^findme_Artifact_class^/-1; resets artifacts class search
+!!SN:W^findme_onevisit_activated^/-1; reset one visit objects activation
+!!VRz1:S^Button.wav^;
+!!SN:Pz1;
+!!DO9990001/1/115/1:P;
+!!DL501:A231/4/0/1; reset custom search
+!!VRy1:Sv999-115;
+!!DL501:Ay1/4/1/1;
+
+!!SN&v999=116:W^Heroes_loop_activated^/99; [heroes]
+
+!!if&v999>116/v999<133;
+  !!VRv2:C93/86/33/33/112/109/14/30/38/28/96/104/113/103/55/2;
+  !!VRy1:Sv999-115;
+  !!VRy2:Svy1;  type
+  !!VRy3:S-1;   any subtype
+  !!VRy3&y2=33/v999=119:S0;
+  !!VRy3&y2=33/v999=120:S1;  [garrisons subtypes]
+!!en;
+
+!!if&v999>132/v999<149;
+  !!VRv2:C15/97/213/31/35/37/88/89/90/42/48/13/13/13/52/7;
+  !!VRy1:Sv999-131;
+  !!VRy2:Svy1;
+  !!VRy3:S-1;
+  !!VRy3&y2=13/v999=144:S1;
+  !!VRy3&y2=13/v999=145:S2;
+  !!VRy3&y2=13/v999=146:S3;   [cartographers, 3 subtypes]
+!!en;
+
+!!if&v999>148/v999<157;
+  ; monoliths one way entrance
+  !!VRy2:S43;
+  !!VRv2:C0/1/2/3/7/6/5/4;
+  !!VRy1:Sv999-147;
+  !!VRy3:Svy1;
+!!en;
+
+!!if&v999>156/v999<165;
+  ;monolith one way exit
+  !!VRy2:S44;
+  !!VRv2:C0/1/2/3/7/6/5/4;
+  !!VRy1:Sv999-155;
+  !!VRy3:Svy1;
+!!en;
+
+ !!if&v999>164/v999<173;
+   ;monoliths two ways
+   !!VRy2:S45; type
+   !!VRv2:C0/1/2/3/4/5/6/7;
+   !!VRy1:Sv999-163;
+   !!VRy3:Svy1;
+ !!en;
+
+ !!if&v999>172/v999<189;
+   !!VRv2:C57/56/60/99/63/62/64/80/81/92/22/91/94/108/95/49;
+   !!VRy1:Sv999-171;
+   !!VRy2:Svy1;
+   !!VRy3:S-1;
+ !!en;
+
+ !!if&v999>188/v999<191;
+   !!VRv2:C111/110;
+   !!VRy1:Sv999-187;
+   !!VRy2:Svy1;
+   !!VRy3:S-1;
+ !!en;
+
+!!if&v999>190/v999<201; one visit objects
+  !!VRv2:C4/61/32/100/41/23/51/47/107/102;
+  !!VRy1:Sv999-189;
+  !!VRy2:Svy1;
+  !!VRy3:S-1;
+  !!SN:W^findme_onevisit_activated^/99;
+!!en;
+
+!!if&v999>200/v999<209; mines type 53
+  !!VRv2:C7/1/4/5/6/2/0/3;
+  !!VRy2:S53;
+  !!VRy4:Sv999-199;
+  !!VRy3:Svy4;
+!!en;
+
+!!if&v999>208/v999<220;
+  !!VRv2&v999=209:C24/0;
+  !!VRv2&v999=210:C85/0;
+  !!VRv2&v999=211:C25/0;
+  !!VRv2&v999=212:C16/4;
+  !!VRv2&v999=213:C16/0;
+  !!VRv2&v999=214:C16/1;
+  !!VRv2&v999=215:C16/2;
+  !!VRv2&v999=216:C16/3;
+  !!VRv2&v999=217:C16/5;
+  !!VRv2&v999=218:C16/6;
+  !!VRv2&v999=219:C84/0;
+  !!VRy2:Sv2; 
+  !!VRy3:Sv3;
+!!en;
+
+!!if&v999>219/v999<224; artifacts
+ !!VRy2:S5;
+ !!VRy3:S-1;
+ !!VRy4&v999=220:S2; !!VRy4&v999=221:S4; !!VRy4&v999=222:S8; !!VRy4&v999=223:S16; [class or artifact]
+ !!SN:W^findme_Artifact_class^/y4;
+!!en;
+
+!!if&v999>223/v999<231; creature generators (subtypes) type is 17
+  !!VRy4:Sv999-223; get the dwelling level
+  !!VRy2:S17;
+
+  !!re i/(TOWN_FIRST)/(TOWN_LAST_WOG);
+    !!VR(index:y):Si +3;
+    !!FU(GetTextFileString):P^townname^/i/?z(index);
+  !!en;
+
+  !!IF:G1/6/1/2/3/4/5/6/7/8/9/10/11;
+  !!FU9990008:Py49/v6; get the ID for subtype
+  !!VRy1:S1+y4;
+  !!VRy3:Svy1;
+!!en;
+
+!!SN:W^Heroes_loop_activated^/?y1;
+!!VRy2&y1>98:S-1;
+!!VRy3&y1>98:S-1; deactivate search if loop Heroes choice
+!!SN:W^findme_Type^/y2;
+!!SN:W^findme_Subtype^/y3;
+
+!?FU9990008;
+;x1 CG level
+;x2 faction choice
+!!VRv2&x2=1:C56/57/25/58/35/5/8; Castle
+!!VRv2&x2=2:C6/12/15/50/45/51/24; rampart
+!!VRv2&x2=4:C43/17/1/31/18/36/44; tower
+!!VRv2&x2=8:C29/22/27/37/40/14/10; inferno
+!!VRv2&x2=16:C54/55/48/53/52/3/4; necro
+!!VRv2&x2=32:C46/26/2/33/34/32/41; dungeon
+!!VRv2&x2=64:C21/19/39/38/42/9/1; stronghold
+!!VRv2&x2=128:C20/30/11/0/23/49/28; fortress
+!!VRv2&x2=256:C59/7/47/16/13/60/61; conflux

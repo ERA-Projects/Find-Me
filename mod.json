@@ -1,0 +1,35 @@
+{
+	"caption": {
+		"Cn_Simp": "查找地图物体",
+		"en_US": "Find Me",
+		"ru_RU": ""
+	},
+	"description": {
+		"full": {
+			"Cn_Simp": "readme_cn.txt",
+			"en_US": "readme.txt",
+			"ru_RU": ""
+		},
+		"short": {
+			"Cn_Simp": "",
+			"en_US": "******FIND ME**********\r\nEra mod, requires Era 2.46 or higher\r\n\r\n;author: Valery\r\n\r\n\r\nDescription: adds a new button near map adventure minimap, which will open a search selection dialog. After selecting the object you look for, press \"1\" key (upper left side of your keyboard) to display all objects of that type/subtype. Each key press will display next object, so you can check for additional infos in map. Once all objects all that type&subtype are looped, you will get a \"loop end\" message and w",
+			"ru_RU": ""
+		}
+	},
+	"author": "Valery",
+	"homepage": "",
+	"icon": {
+		"file": "FM.ico",
+		"index": 0
+	},
+	"mod_version": "1.0",
+	"priority": 0,
+	"compatibility": {
+		"class": "default",
+		"entries": {}
+	},
+	"platform": "era",
+	"info_version": "1.0",
+	"plugins": {},
+	"category": "interface"
+}
