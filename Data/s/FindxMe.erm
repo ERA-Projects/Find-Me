@@ -37,15 +37,17 @@ ZVSE2
 !!SN:W^findme_Type^/?y44;
 !!SN:W^findme_Subtype^/?y45;
 
-!!FU|y44=(NO_OBJ):E;
+!!FU&y44=(NO_OBJ):E;
 
-!!SN:W^findme_Artifact_class^/?y1;
+!!if&y44=(OBJ_ARTIFACT);
+  !!SN:W^findme_Artifact_class^/?y1;
 
-!!if&y1>-1;
-  !!UN:U5/-1/?y30;  artifacts
-  !!VRv2:S-1;
-  !!DO9990004/1/y30/1&y30>0/v8900<=y30:P5/y1/y30/v4/v5;  Run through
-  !!FU:E;
+  !!if&y1>-1;
+    !!UN:U5/-1/?y30;  artifacts
+    !!VRv2:S-1;
+    !!DO9990004/1/y30/1&y30>0/v8900<=y30:P5/y1/y30/v4/v5;  Run through
+    !!FU:E;
+  !!en;
 !!en;
 
 !!SN:W^findme_onevisit_activated^/?y46;
