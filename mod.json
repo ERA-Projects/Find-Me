@@ -2,13 +2,13 @@
 	"caption": {
 		"Cn_Simp": "查找地图物体",
 		"en_US": "Find Me",
-		"ru_RU": ""
+		"ru_RU": "Найди меня"
 	},
 	"description": {
 		"full": {
 			"Cn_Simp": "readme_cn.txt",
 			"en_US": "readme.txt",
-			"ru_RU": ""
+			"ru_RU": "readnme_ru.txt"
 		},
 		"short": {
 			"Cn_Simp": "",
