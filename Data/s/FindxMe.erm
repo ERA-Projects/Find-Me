@@ -445,10 +445,19 @@ ZVSE2
 
   !!re i/(TOWN_FIRST)/(TOWN_LAST_WOG);
     !!VR(index:y):Si +3;
-    !!FU(GetTextFileString):P^townname^/i/?z(index);
+    !!FU(GetTextFileString):P^towntype^/i/?z(index);
   !!en;
 
-  !!IF:G1/6/1/2/3/4/5/6/7/8/9/10/11;
+  !!SN:T^era.buttons.cancel^/?z12;
+  !!IF:G1/6/1/2/3/4/5/6/7/8/9/10/11/12;
+
+  ; If Cancel was chosen, exit the funtion
+  !!if&v6=512;
+    !!SN:W^findme_Type^/(NO_OBJ);
+    !!SN:W^findme_Subtype^/(NO_OBJ);
+    !!FU:E;
+  !!en;
+
   !!FU9990008:Py49/v6; get the ID for subtype
   !!VRy1:S1+y4;
   !!VRy3:Svy1;
@@ -472,3 +481,19 @@ ZVSE2
 !!VRv2&x2=64:C21/19/39/38/42/9/1; stronghold
 !!VRv2&x2=128:C20/30/11/0/23/49/28; fortress
 !!VRv2&x2=256:C59/7/47/16/13/60/61; conflux
+
+; This function is not currently used
+; This mod will need to be rewritten later with the use of this function
+!?FU(findme_GetAdvMapScreenOffset);
+!#VA(offsetX:x) (offsetY:x);
+
+!!VR(offsetX):S0;
+!!VR(offsetY):S0;
+
+!!SN:F^GetModuleHandleA^/^HD_WOG.dll^;
+
+!!if&v1;
+  !!UN:C(ADDR_GAME_SCREEN_WIDTH)/(UNC_INT16)/?(offsetX) C(ADDR_GAME_SCREEN_HEIGHT)/(UNC_INT16)/?(offsetY);  [resolution H, V]
+  !!VR(offsetX):-736 :64;
+  !!VR(offsetY):-600 :64;    [map center offset]
+!!en;
