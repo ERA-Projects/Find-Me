@@ -1,0 +1,12 @@
+{
+	"findme": {
+		"noHero": "搜索\"一次访问的对象\"已激活，仅英雄条件已激活，但您尚未选择英雄。",
+		"doneLoop": "循环完成！",
+		"totalArts": "有@art@地图上的文物（所有类别）。",
+		"totalObjs": "有@obj@地图上选定的对象。",
+		"customSearch": "自定义搜索",
+		"enterType": "输入要搜索的对象类型。",
+		"enterSubtype": "输入要查找的对象的子类型。",
+		"selectFaction": "选择一个派系："
+	}
+}

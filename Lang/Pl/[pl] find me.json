@@ -1,0 +1,12 @@
+{
+	"findme": {
+		"noHero": "Wyszukiwanie \"Obiekty odwiedzone raz\" jest aktywowane, aktywowany jest tylko warunek bohatera, ale jeszcze nie wybrałeś bohatera.",
+		"doneLoop": "Cykl się zakończył!",
+		"totalArts": "Na mapie znajdują się @art@.",
+		"totalObjs": "Na mapie zaznaczono @obj@.",
+		"customSearch": "Wyszukiwanie niestandardowe",
+		"enterType": "Wprowadź typ obiektu do wyszukania.",
+		"enterSubtype": "Wprowadź podtyp obiektu, który chcesz znaleźć.",
+		"selectFaction": "Wybierz frakcję:"
+	}
+}

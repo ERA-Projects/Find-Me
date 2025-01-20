@@ -1,12 +1,12 @@
 {
-  "findme":  {
-    "noHero":  "\"One visit objects\" search is activated, with active only hero condition, but you haven't selected a hero yet.",
-    "doneLoop": "Loop completed!",
-    "totalArts": "There are @art@ artifacts on the map (all classes).",
-    "totalObjs": "There are @obj@ selected objects on the map.",
-    "customSearch": "Custom Search",
-    "enterType":  "Enter the TYPE of the object to look for.",
-    "enterSubtype": "Enter the SUBTYPE of the object to look for.",
-    "selectFaction":  "Select a faction:"
-  }
+	"findme": {
+		"noHero": "\"One visit objects\" search is activated, with active only hero condition, but you haven't selected a hero yet.",
+		"doneLoop": "Loop completed!",
+		"totalArts": "There are @art@ artifacts on the map (all classes).",
+		"totalObjs": "There are @obj@ selected objects on the map.",
+		"customSearch": "Custom Search",
+		"enterType": "Enter the TYPE of the object to look for.",
+		"enterSubtype": "Enter the SUBTYPE of the object to look for.",
+		"selectFaction": "Select a faction:"
+	}
 }
